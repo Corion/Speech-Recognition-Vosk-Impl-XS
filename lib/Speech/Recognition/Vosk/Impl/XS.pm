@@ -1,20 +1,20 @@
-package Speech::Recognition::Vosk;
+package Speech::Recognition::Vosk::Impl::XS;
 use strict;
-use 5.012; # //=
-use Carp 'croak';
+use Exporter 'import';
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 NAME
 
-Speech::Recognition::Vosk - offline speech recognition using the Vosk toolkit
+Speech::Recognition::Vosk::Impl::XS - XS library for the Vosk toolkit
 
 =head1 SYNOPSIS
 
 Most likely, you want to use the more convenient OO wrapper in
 L<Speech::Recognition::Vosk::Recognizer>.
 
-  use Speech::Recognition::Vosk;
+  use Speech::Recognition::Vosk::Impl::XS qw(
+  );
   use JSON 'decode_json';
 
   my $model = Speech::Recognition::Vosk::model_new("model-en");
@@ -50,32 +50,17 @@ L<Speech::Recognition::Vosk::Recognizer>.
 
 =cut
 
-sub import_win32 {
-    # Bind the functions from the precompiled DLL
-    require Speech::Recognition::Vosk::Win32;
-    Speech::Recognition::Vosk::Win32->import;
-}
+our @EXPORT_OK = (qw(
+    model_new
+    model_find_word
+    recognizer_new
+    recognizer_accept_waveform
+    recognizer_partial_result
+    recognizer_result
+    recognizer_final_result
+));
 
-sub import_xs {
-    require XSLoader;
-    XSLoader::load(__PACKAGE__, $VERSION);
-}
-
-sub import {
-    my %args = @_;
-    if( $^O eq 'MSWin32' ) {
-        $args{binding} //= 'win32';
-    } else {
-        $args{binding} //= 'xs';
-    }
-
-    if( $args{ binding } eq 'xs' ) {
-        import_xs();
-    } elsif( $args{ binding } eq 'win32' ) {
-        import_win32();
-    } else {
-        croak "Unknown binding '$args{binding}'";
-    }
-}
+require XSLoader;
+XSLoader::load(__PACKAGE__, $VERSION);
 
 1;
