@@ -48,6 +48,14 @@ L<Speech::Recognition::Vosk::Recognizer>.
 
 =head1 FUNCTIONS
 
+    model_new
+    model_find_word
+    recognizer_new
+    recognizer_accept_waveform
+    recognizer_partial_result
+    recognizer_result
+    recognizer_final_result
+
 =cut
 
 our @EXPORT_OK = (qw(
